@@ -1,1 +1,122 @@
-Hello World
+
+
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="https://production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+  <link rel="mask-icon" type="" href="https://production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
+  <title>CodePen - 11winter</title>
+  
+  
+  
+  
+      <style>
+      #myCanvas{
+  background:rgb(225,225,225);
+}
+    </style>
+
+  
+  
+  
+  
+</head>
+
+<body translate="no" >
+
+  <canvas id="myCanvas" width=400 height=300></canvas>
+
+<div>Team A:<span id="scoreA">0</span></div>
+<div>Team B:<span id="scoreB">0</span></div>
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+
+    <script >
+    console.clear();
+c = document.getElementById("myCanvas");
+ctx = c.getContext("2d");
+balls = [];
+function makeBalls(n) {
+  for (i = 0; i < n; i++) {
+    var ball = {};
+    ball.alive = true;
+    ball.r = Math.random() * 10 + 2;
+    ball.x = Math.random() * (c.width - ball.r * 2) + ball.r;
+    ball.y = Math.random() * (c.height - ball.r * 2) + ball.r;
+    balls.push(ball);
+  }
+}
+makeBalls(10);
+//console.log(balls);
+function update() {
+  ctx.clearRect(0, 0, c.width, c.height);
+  for (i = 0; i < balls.length; i++) {
+    if(balls[i].alive == false) continue;
+    ctx.beginPath();
+    ctx.arc(balls[i].x, balls[i].y, balls[i].r, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+}
+
+update();
+function checkCollision() {
+  hitcount = 0;
+  for (i = 0; i < balls.length; i++) {
+    for (j = 0; j < balls.length; j++) {
+      if (i == j) continue;
+      deltax = balls[i].x - balls[j].x;
+      deltay = balls[i].y - balls[j].y;
+      d = Math.sqrt(deltax * deltax + deltay * deltay);
+      //console.log(d, balls[i].r + balls[j].r);
+
+      if (d < balls[i].r + balls[j].r) {
+        if (balls[i].r < balls[j].r) {
+          balls[0].r += 1;
+          balls[i].alive = false;
+        } else {
+          if(balls[j].alive){
+          balls[0].r += 1;
+          balls[j].alive = false;
+          }
+        }
+        hitcount = hitcount + 1;
+        hits = $("#scoreA").text();
+        hits = hits * 1 + 1;
+
+        $("#scoreA").text(hits);
+        console.log("hit");
+      }
+    }
+  }
+  update();
+}
+
+checkCollision();
+$("body").keydown(onKeyDown);
+function onKeyDown(e) {
+  console.log(e.key);
+  if (e.key == "w") {
+    balls[0].y = balls[0].y - 1;
+  }
+  if (e.key == "s") {
+    balls[0].y = balls[0].y + 1;
+  }
+  if (e.key == "a") {
+    balls[0].x = balls[0].x - 1;
+  }
+  if (e.key == "d") {
+    balls[0].x = balls[0].x + 1;
+  }
+  checkCollision();
+  update();
+}
+  </script>
+
+  
+  
+
+</body>
+</html>
+ 
